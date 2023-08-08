@@ -1,0 +1,19 @@
+version: '2'
+services:
+  db:
+    image: mysql:8.0.15
+    restart: always
+    ports:
+      - 63306:3306
+    volumes:
+      - ./data/betadb:/var/lib/mysql
+    environment:
+      MYSQL_USER: beta
+      MYSQL_PASSWORD: beta
+      MYSQL_ROOT_PASSWORD: 1qaz2wsx
+      MYSQL_DATABASE: betadb
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_general_ci,
+      --default-storage-engine=innodb
+    ]

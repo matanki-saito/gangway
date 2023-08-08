@@ -1,0 +1,116 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Exe Manager</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container">
+    <h2>IP Filter</h2>
+    <p>Reject対象のIPです</p>
+    <table class="table table-hover">
+        <tbody>
+        <tr class="thead-light">
+            <th scope="col">IP</th>
+            <th scope="col">operation</th>
+        </tr>
+        <tr>
+            <form class="form-group"
+                  enctype="multipart/form-data"
+                  method="get"
+                  th:action="@{'/ip'}"
+                  th:object="${ipSearchForm}">
+                <td><input class="form-control" id="ip-search" th:field="*{ip}"
+                           th:placeholder="10.152.16.241"
+                           type="text"/></td>
+                <td>
+                    <button class="form-control btn btn-success" type="submit">SEARCH</button>
+                </td>
+            </form>
+        </tr>
+        <tr>
+            <form class="form-group"
+                  enctype="multipart/form-data"
+                  method="post"
+                  th:action="@{'/ip/register'}"
+                  th:object="${ipForm}">
+                <td><input class="form-control" id="ip-register" th:field="*{ip}"
+                           th:placeholder="10.152.16.241"
+                           type="text"/></td>
+                <td>
+                    <button class="form-control btn btn-success" type="submit">REGISTER</button>
+                </td>
+            </form>
+        </tr>
+        <tr class="thead-light">
+            <th scope="col">IP</th>
+            <th scope="col">operation</th>
+        </tr>
+        <tr th:each="ip : ${ipListView.pageData.getContent()}">
+            <td>
+                <span class="badge badge-dark" th:text="${ip.ip}"></span>
+            </td>
+            <td>
+                <form enctype="multipart/form-data"
+                      method="post"
+                      th:action="@{'/ip/delete/' + ${ip.id} }">
+                    <button class="form-control btn btn-danger">DELETE</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <nav aria-label="..." th:unless="${ipListView.getPageData().getSize() == 0}">
+        <ul class="pagination">
+            <li class="page-item"
+                th:classappend="${ipListView.getPageData().first} ? 'disabled':''">
+                <a aria-label="|<"
+                   class="page-link"
+                   th:href="@{'/ip'(page=0)}">
+                    first
+                </a>
+            </li>
+            <li class="page-item"
+                th:classappend="(${i}==${ipListView.getPageData().number})? 'active' : ''"
+                th:each='i : ${#numbers.sequence(0, ipListView.getPageData().totalPages -1)}'>
+                <a class="page-link" href="#"
+                   th:href="@{'/ip' (page=${i})}">
+                    <span th:text='${i+1}'>1</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:classappend="${ipListView.getPageData().last} ? 'disabled':''">
+                <a aria-label=">|" class="page-link" href="#"
+                   th:href="@{'/ip' (page=(${ipListView.getPageData().totalPages}-1))}">
+                    <span aria-hidden="true">Last</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</main>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script crossorigin="anonymous"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+</body>
+</html>

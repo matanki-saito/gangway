@@ -1,0 +1,79 @@
+buildscript {
+    ext.versions = [
+            'springBootVersion': '3.1.2',
+            'mysqlj'           : '8.0.33',
+            'grpc'             : '5.1.4',
+            'lombok'           : '8.1.0',
+            'mockito'          : '5.4.0',
+            'slf4j'            : '2.0.7',
+            'mybatis'          : '3.0.2',
+            'geoip2'           : '2.15.0'
+    ]
+
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${versions.springBootVersion}"
+        classpath "io.github.lognet:grpc-spring-boot-starter-gradle-plugin:${versions.grpc}"
+        classpath "io.freefair.gradle:lombok-plugin:${versions.lombok}"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'io.github.lognet.grpc-spring-boot'
+apply plugin: 'io.freefair.lombok'
+
+group = 'cloud.popush'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = "18"
+targetCompatibility = "18"
+
+repositories {
+    mavenCentral()
+}
+
+bootJar {
+    archiveBaseName = 'gate-docker'
+    archiveVersion = '1.0.0'
+}
+
+javadoc {
+    options.charSet = 'UTF-8'
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('com.fasterxml.jackson.dataformat:jackson-dataformat-csv')
+    implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    implementation("org.slf4j:slf4j-api:${versions.slf4j}")
+
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${versions.mybatis}")
+
+    implementation("com.maxmind.geoip2:geoip2:${versions.geoip2}")
+
+    testImplementation platform("org.mockito:mockito-bom:${versions.mockito}")
+    testImplementation('org.mockito:mockito-core')
+    testImplementation('org.mockito:mockito-junit-jupiter')
+
+    runtimeOnly("mysql:mysql-connector-java:${versions.mysqlj}")
+}
+
+compileJava {
+    options.fork = true
+    options.forkOptions.setMemoryMaximumSize("4g")
+}
+
+test {
+    useJUnitPlatform()
+}
