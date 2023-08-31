@@ -1,6 +1,6 @@
 package cloud.popush.ip;
 
-import cloud.popush.filter.GateFilter;
+import cloud.popush.envoy.GateFilter;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -15,22 +15,22 @@
 
 <body>
 <main class="container">
-    <h2>IP Filter</h2>
-    <p>Reject対象のIPです</p>
+    <h2>Fingerprint Filter</h2>
+    <p>Reject対象のFingerprintです</p>
     <table class="table table-hover">
         <tbody>
         <tr class="thead-light">
-            <th scope="col">IP</th>
+            <th scope="col">Fingerprint</th>
             <th scope="col">operation</th>
         </tr>
         <tr>
             <form class="form-group"
                   enctype="multipart/form-data"
                   method="get"
-                  th:action="@{'/ip'}"
-                  th:object="${ipSearchForm}">
-                <td><input class="form-control" id="ip-search" th:field="*{ip}"
-                           th:placeholder="10.152.16.241"
+                  th:action="@{'/fingerprint'}"
+                  th:object="${fingerprintSearchForm}">
+                <td><input class="form-control" id="ip-search" th:field="*{key}"
+                           th:placeholder="d0fe5a5a6522227dddd05892a6577d4d"
                            type="text"/></td>
                 <td>
                     <button class="form-control btn btn-success" type="submit">SEARCH</button>
@@ -41,10 +41,10 @@
             <form class="form-group"
                   enctype="multipart/form-data"
                   method="post"
-                  th:action="@{'/ip/register'}"
-                  th:object="${ipForm}">
-                <td><input class="form-control" id="ip-register" th:field="*{ip}"
-                           th:placeholder="10.152.16.241"
+                  th:action="@{'/fingerprint/register'}"
+                  th:object="${fingerprintForm}">
+                <td><input class="form-control" id="ip-register" th:field="*{key}"
+                           th:placeholder="d0fe5a5a6522227dddd05892a6577d4d"
                            type="text"/></td>
                 <td>
                     <button class="form-control btn btn-success" type="submit">REGISTER</button>
@@ -52,17 +52,17 @@
             </form>
         </tr>
         <tr class="thead-light">
-            <th scope="col">IP</th>
+            <th scope="col">Fingerprint</th>
             <th scope="col">operation</th>
         </tr>
-        <tr th:each="ip : ${ipListView.pageData.getContent()}">
+        <tr th:each="fingerprint : ${fingerprintListView.pageData.getContent()}">
             <td>
-                <span class="badge badge-dark" th:text="${ip.ip}"></span>
+                <span class="badge badge-dark" th:text="${fingerprint.key}"></span>
             </td>
             <td>
                 <form enctype="multipart/form-data"
                       method="post"
-                      th:action="@{'/ip/delete/' + ${ip.id} }">
+                      th:action="@{'/fingerprint/delete/' + ${fingerprint.id} }">
                     <button class="form-control btn btn-danger">DELETE</button>
                 </form>
             </td>
@@ -70,28 +70,28 @@
         </tbody>
     </table>
 
-    <nav aria-label="..." th:unless="${ipListView.getPageData().getSize() == 0}">
+    <nav aria-label="..." th:unless="${fingerprintListView.getPageData().getSize() == 0}">
         <ul class="pagination">
             <li class="page-item"
-                th:classappend="${ipListView.getPageData().first} ? 'disabled':''">
+                th:classappend="${fingerprintListView.getPageData().first} ? 'disabled':''">
                 <a aria-label="|<"
                    class="page-link"
-                   th:href="@{'/ip'(page=0)}">
+                   th:href="@{'/fingerprint'(page=0)}">
                     first
                 </a>
             </li>
             <li class="page-item"
-                th:classappend="(${i}==${ipListView.getPageData().number})? 'active' : ''"
-                th:each='i : ${#numbers.sequence(0, ipListView.getPageData().totalPages -1)}'>
+                th:classappend="(${i}==${fingerprintListView.getPageData().number})? 'active' : ''"
+                th:each='i : ${#numbers.sequence(0, fingerprintListView.getPageData().totalPages -1)}'>
                 <a class="page-link" href="#"
-                   th:href="@{'/ip' (page=${i})}">
+                   th:href="@{'/fingerprint' (page=${i})}">
                     <span th:text='${i+1}'>1</span>
                 </a>
             </li>
             <li class="page-item"
-                th:classappend="${ipListView.getPageData().last} ? 'disabled':''">
+                th:classappend="${fingerprintListView.getPageData().last} ? 'disabled':''">
                 <a aria-label=">|" class="page-link" href="#"
-                   th:href="@{'/ip' (page=(${ipListView.getPageData().totalPages}-1))}">
+                   th:href="@{'/fingerprint' (page=(${fingerprintListView.getPageData().totalPages}-1))}">
                     <span aria-hidden="true">Last</span>
                 </a>
             </li>

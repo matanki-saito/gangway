@@ -1,4 +1,4 @@
-package cloud.popush.filter;
+package cloud.popush.envoy;
 
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 

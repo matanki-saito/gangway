@@ -1,6 +1,5 @@
-package cloud.popush.service;
+package cloud.popush.envoy;
 
-import cloud.popush.filter.GateFilter;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.envoyproxy.envoy.service.auth.v3.AuthorizationGrpc;
@@ -26,7 +25,7 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
 
         for (var filter : gateFilterList) {
             if (!filter.check(request)) {
-                log.debug("NG:%s".formatted(filter.getClass().getName()));
+                log.info("NG:%s".formatted(filter.getClass().getName()));
                 isPass = false;
                 break;
             }

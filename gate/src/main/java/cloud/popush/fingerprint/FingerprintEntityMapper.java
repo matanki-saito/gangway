@@ -1,4 +1,4 @@
-package cloud.popush.db;
+package cloud.popush.fingerprint;
 
 import lombok.NonNull;
 import org.apache.ibatis.annotations.*;
@@ -20,7 +20,7 @@ public interface FingerprintEntityMapper {
     Integer insert(@NonNull FingerprintEntity fingerprintEntity);
 
     @Results(value = {
-            @Result(property = "fingerprintId", column = "fingerprint_id"),
+            @Result(property = "id", column = "fingerprint_id"),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })
@@ -43,4 +43,14 @@ public interface FingerprintEntityMapper {
 
     @Select("SELECT EXISTS(SELECT 1 FROM `fingerprint` WHERE `key`=#{key})")
     boolean exist(@Param("key") @NonNull String key);
+
+    @Delete("""
+            <script>
+            DELETE FROM `fingerprint`
+            <where>
+                fingerprint_id = #{id}
+            </where>
+            </script>
+            """)
+    void delete(@NonNull Long id);
 }

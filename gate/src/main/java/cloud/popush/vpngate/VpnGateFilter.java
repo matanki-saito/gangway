@@ -1,16 +1,14 @@
-package cloud.popush.filter;
+package cloud.popush.vpngate;
 
-import cloud.popush.service.GepIp2Service;
-import cloud.popush.db.CountryEntityMapper;
+import cloud.popush.envoy.GateFilter;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
 @Component
-public class CountryFilter implements GateFilter {
-    private final GepIp2Service geoIp2Service;
-    private final CountryEntityMapper countryEntityMapper;
+public class VpnGateFilter implements GateFilter {
+    private final VpnGateService vpnGateService;
 
     @Override
     public boolean check(CheckRequest checkRequest) {
@@ -20,8 +18,9 @@ public class CountryFilter implements GateFilter {
                 .getHttp()
                 .getHost();
 
-        var countryName = geoIp2Service.getCountryName(ipStr);
-
-        return countryEntityMapper.exist(countryName);
+        return vpnGateService.getList()
+                .stream()
+                .map(VpnGateDto::getIp)
+                .noneMatch(ipStr::equals);
     }
 }

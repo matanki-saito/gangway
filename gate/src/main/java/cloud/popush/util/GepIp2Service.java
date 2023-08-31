@@ -1,10 +1,9 @@
-package cloud.popush.service;
+package cloud.popush.util;
 
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.AsnResponse;
-import com.maxmind.geoip2.model.CountryResponse;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -43,14 +42,15 @@ public class GepIp2Service {
             throw new RuntimeException(e);
         }
 
-        CountryResponse response;
+        String response;
         try (var reader = new DatabaseReader.Builder(databaseFile).withCache(new CHMCache()).build()) {
-            response = reader.country(str2IpObj(ipStr));
+            response = reader.country(str2IpObj(ipStr)).getCountry().getName();
+            ;
         } catch (IOException | GeoIp2Exception e) {
-            throw new RuntimeException(e);
+            response = "XX";
         }
 
-        return response.getCountry().getName();
+        return response;
     }
 
     private InetAddress str2IpObj(String ipStr) {

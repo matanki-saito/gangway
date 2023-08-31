@@ -1,6 +1,5 @@
-package cloud.popush.db;
+package cloud.popush.country;
 
-import cloud.popush.db.FingerprintEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,8 +11,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FingerprintEntityReadonly extends FingerprintEntity {
-    private long fingerprintId;
+public class CountryEntityReadonly extends CountryEntity {
+    private long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

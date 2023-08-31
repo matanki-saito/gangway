@@ -1,4 +1,4 @@
-package cloud.popush.db;
+package cloud.popush.country;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

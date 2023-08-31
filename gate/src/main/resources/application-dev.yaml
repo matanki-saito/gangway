@@ -10,11 +10,3 @@ spring:
   sql:
     init:
       mode: always
-  security:
-    oauth2:
-      client:
-        registration:
-          github:
-            client-id: c3b647914aed0ff081da
-            # client-secret: from env
-            redirect-uri: http://local.triela.popush.cloud/login/oauth2/code/github

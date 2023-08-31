@@ -1,4 +1,4 @@
-package cloud.popush.ip;
+package cloud.popush.country;
 
 import lombok.NonNull;
 import org.apache.ibatis.annotations.*;
@@ -6,49 +6,50 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 @Mapper
-public interface IpEntityMapper {
+public interface CountryEntityMapper {
     @Insert("""
-            INSERT INTO `ip`
+            INSERT INTO `country`
             (
-                `string`
+                `name`
             )
             VALUES
             (
-                #{string}
+                #{name}
             )
             """)
-    Integer insert(@NonNull IpEntity ipEntity);
+    Integer insert(@NonNull CountryEntity countryEntity);
 
     @Results(value = {
-            @Result(property = "id", column = "ip_id"),
+            @Result(property = "id", column = "country_id"),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at")
     })
     @Select("""
             <script>
                 SELECT *
-                FROM `ip`
+                FROM `country`
                 <where>
                     <if test="condition.id != null">
-                        AND `ip_id` = #{condition.id}
+                        AND `country_id` = #{condition.id}
                     </if>
-                    <if test="condition.string != null">
-                        AND `string` = #{condition.string}
+                    <if test="condition.name != null">
+                        AND `name` = #{condition.name}
                     </if>
                 </where>
                 LIMIT 100
             </script>
             """)
-    List<IpEntityReadonly> select(@Param("condition") @NonNull IpEntityCondition ipEntityCondition);
+    List<CountryEntityReadonly> select(@Param("condition") @NonNull CountryEntityCondition condition);
 
-    @Select("SELECT EXISTS(SELECT 1 FROM `ip` WHERE `string`=#{string})")
-    boolean exist(@Param("string") @NonNull String string);
+
+    @Select("SELECT EXISTS(SELECT 1 FROM country WHERE `name`=#{name})")
+    boolean exist(@Param("name") @NonNull String name);
 
     @Delete("""
             <script>
-            DELETE FROM `ip`
+            DELETE FROM `country`
             <where>
-                ip_id = #{id}
+                country_id = #{id}
             </where>
             </script>
             """)

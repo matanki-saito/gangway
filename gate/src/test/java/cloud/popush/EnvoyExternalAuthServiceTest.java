@@ -1,6 +1,6 @@
 package cloud.popush;
 
-import cloud.popush.service.EnvoyExternalAuthService;
+import cloud.popush.envoy.EnvoyExternalAuthService;
 import com.google.rpc.Status;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import io.envoyproxy.envoy.service.auth.v3.CheckResponse;

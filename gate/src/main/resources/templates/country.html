@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <title>IP Manager</title>
+    <title>Country Manager</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
@@ -15,22 +15,22 @@
 
 <body>
 <main class="container">
-    <h2>IP Filter</h2>
-    <p>Reject対象のIPです</p>
+    <h2>Country Filter</h2>
+    <p>Reject対象のCountryです。ISO 3166-alpha2コードが必要です。</p>
     <table class="table table-hover">
         <tbody>
         <tr class="thead-light">
-            <th scope="col">IP</th>
+            <th scope="col">Country</th>
             <th scope="col">operation</th>
         </tr>
         <tr>
             <form class="form-group"
                   enctype="multipart/form-data"
                   method="get"
-                  th:action="@{'/ip'}"
-                  th:object="${ipSearchForm}">
-                <td><input class="form-control" id="ip-search" th:field="*{ip}"
-                           th:placeholder="10.152.16.241"
+                  th:action="@{'/country'}"
+                  th:object="${countrySearchForm}">
+                <td><input class="form-control" id="ip-search" th:field="*{name}"
+                           th:placeholder="RU"
                            type="text"/></td>
                 <td>
                     <button class="form-control btn btn-success" type="submit">SEARCH</button>
@@ -41,10 +41,10 @@
             <form class="form-group"
                   enctype="multipart/form-data"
                   method="post"
-                  th:action="@{'/ip/register'}"
-                  th:object="${ipForm}">
-                <td><input class="form-control" id="ip-register" th:field="*{ip}"
-                           th:placeholder="10.152.16.241"
+                  th:action="@{'/country/register'}"
+                  th:object="${countryForm}">
+                <td><input class="form-control" id="ip-register" th:field="*{name}"
+                           th:placeholder="US"
                            type="text"/></td>
                 <td>
                     <button class="form-control btn btn-success" type="submit">REGISTER</button>
@@ -52,17 +52,17 @@
             </form>
         </tr>
         <tr class="thead-light">
-            <th scope="col">IP</th>
+            <th scope="col">Country</th>
             <th scope="col">operation</th>
         </tr>
-        <tr th:each="ip : ${ipListView.pageData.getContent()}">
+        <tr th:each="c : ${countryListView.pageData.getContent()}">
             <td>
-                <span class="badge badge-dark" th:text="${ip.ip}"></span>
+                <span class="badge badge-dark" th:text="${c.name}"></span>
             </td>
             <td>
                 <form enctype="multipart/form-data"
                       method="post"
-                      th:action="@{'/ip/delete/' + ${ip.id} }">
+                      th:action="@{'/country/delete/' + ${c.id} }">
                     <button class="form-control btn btn-danger">DELETE</button>
                 </form>
             </td>
@@ -70,28 +70,28 @@
         </tbody>
     </table>
 
-    <nav aria-label="..." th:unless="${ipListView.getPageData().getSize() == 0}">
+    <nav aria-label="..." th:unless="${countryListView.getPageData().getSize() == 0}">
         <ul class="pagination">
             <li class="page-item"
-                th:classappend="${ipListView.getPageData().first} ? 'disabled':''">
+                th:classappend="${countryListView.getPageData().first} ? 'disabled':''">
                 <a aria-label="|<"
                    class="page-link"
-                   th:href="@{'/ip'(page=0)}">
+                   th:href="@{'/country'(page=0)}">
                     first
                 </a>
             </li>
             <li class="page-item"
-                th:classappend="(${i}==${ipListView.getPageData().number})? 'active' : ''"
-                th:each='i : ${#numbers.sequence(0, ipListView.getPageData().totalPages -1)}'>
+                th:classappend="(${i}==${countryListView.getPageData().number})? 'active' : ''"
+                th:each='i : ${#numbers.sequence(0, countryListView.getPageData().totalPages -1)}'>
                 <a class="page-link" href="#"
-                   th:href="@{'/ip' (page=${i})}">
+                   th:href="@{'/country' (page=${i})}">
                     <span th:text='${i+1}'>1</span>
                 </a>
             </li>
             <li class="page-item"
-                th:classappend="${ipListView.getPageData().last} ? 'disabled':''">
+                th:classappend="${countryListView.getPageData().last} ? 'disabled':''">
                 <a aria-label=">|" class="page-link" href="#"
-                   th:href="@{'/ip' (page=(${ipListView.getPageData().totalPages}-1))}">
+                   th:href="@{'/country' (page=(${countryListView.getPageData().totalPages}-1))}">
                     <span aria-hidden="true">Last</span>
                 </a>
             </li>

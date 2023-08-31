@@ -1,6 +1,6 @@
-package cloud.popush.filter;
+package cloud.popush.fingerprint;
 
-import cloud.popush.db.FingerprintEntityMapper;
+import cloud.popush.envoy.GateFilter;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,8 +17,8 @@ public class FingerprintFilter implements GateFilter {
                 .getRequest()
                 .getHttp()
                 .getHeadersMap()
-                .getOrDefault("fingerprint", "");
+                .getOrDefault("fingerprint", "a1111111111111111111111111111111");
 
-        return fingerprintEntityMapper.exist(fingerprint);
+        return !fingerprintEntityMapper.exist(fingerprint);
     }
 }
