@@ -35,7 +35,6 @@ apply plugin: 'com.palantir.docker'
 apply plugin: 'net.researchgate.release'
 
 group = 'cloud.popush'
-version = '1.0-SNAPSHOT'
 sourceCompatibility = "18"
 targetCompatibility = "18"
 
@@ -45,7 +44,7 @@ repositories {
 
 bootJar {
     archiveBaseName = 'gate-docker'
-    archiveVersion = '1.0.0'
+    archiveVersion = version
 }
 
 task unpack(type: Copy) {
