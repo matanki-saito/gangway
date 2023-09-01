@@ -25,12 +25,17 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
 
         log.info("{}", request);
 
-        for (var filter : gateFilterList) {
-            if (!filter.check(request)) {
-                log.info("NG:%s".formatted(filter.getClass().getName()));
-                isPass = false;
-                break;
+        try {
+            for (var filter : gateFilterList) {
+                if (!filter.check(request)) {
+                    log.info("NG:%s".formatted(filter.getClass().getName()));
+                    isPass = false;
+                    break;
+                }
             }
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            log.info("{}", e.getStackTrace());
         }
 
         log.info("f");
