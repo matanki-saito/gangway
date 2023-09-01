@@ -100,7 +100,7 @@ release {
     tagCommitMessage = '[skip ci] [Gradle Release Plugin] - creating tag: '
     newVersionCommitMessage = '[skip ci] [Gradle Release Plugin] - new version commit: '
 
-    tagTemplate = 'app-${version}'
+    tagTemplate = '${version}'
 
     git {
         requireBranch.set('main')

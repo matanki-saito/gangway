@@ -24,7 +24,7 @@ public class CountryFilter implements GateFilter {
 
         var countryName = geoIp2Service.getCountryName(ipStr);
 
-        log.info(countryName);
+        log.info("{}:{}:{}", ipStr, checkRequest, countryName);
 
         return countryEntityMapper.exist(countryName);
     }
