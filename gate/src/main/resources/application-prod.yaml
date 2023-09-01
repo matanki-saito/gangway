@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://mysql.ente-pubblico-per-il-benessere-sociale.svc.cluster.local/mydb?characterEncoding=UTF-8&serverTimezone=JST&allowPublicKeyRetrieval=true&useSSL=false
+    #url: from secret
     username: gnagaoka
     #password: from secret
     type: com.zaxxer.hikari.HikariDataSource
