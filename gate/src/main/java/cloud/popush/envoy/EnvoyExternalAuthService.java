@@ -33,6 +33,8 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
             }
         }
 
+        log.info("f");
+
         var r = CheckResponse.newBuilder()
                 .setStatus(Status
                         .newBuilder()
@@ -41,7 +43,10 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
                         .build())
                 .build();
 
+        log.info("{}", r);
+
         responseObserver.onNext(r);
         responseObserver.onCompleted();
+        responseObserver.onError(new RuntimeException());
     }
 }
