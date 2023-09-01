@@ -4,9 +4,11 @@ import cloud.popush.envoy.GateFilter;
 import cloud.popush.util.GepIp2Service;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
+@Slf4j
 @Component
 public class CountryFilter implements GateFilter {
     private final GepIp2Service geoIp2Service;
@@ -21,6 +23,8 @@ public class CountryFilter implements GateFilter {
                 .getHost();
 
         var countryName = geoIp2Service.getCountryName(ipStr);
+
+        log.info(countryName);
 
         return countryEntityMapper.exist(countryName);
     }
