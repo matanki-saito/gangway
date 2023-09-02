@@ -33,6 +33,11 @@ public class CountryFilter implements GateFilter {
 
         String countryName;
 
+        // system machine
+        if (ipStr.equals("192.168.1.200")) {
+            return new AuthReasonOk();
+        }
+
         try {
             countryName = geoIp2Service.getCountryName(ipStr);
         } catch (ArgumentException e) {
