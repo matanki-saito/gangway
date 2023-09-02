@@ -1,6 +1,6 @@
 package cloud.popush.service;
 
-import cloud.popush.util.GepIp2Service;
+import cloud.popush.country.GepIp2Service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

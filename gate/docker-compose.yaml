@@ -17,3 +17,10 @@ services:
       --collation-server=utf8mb4_general_ci,
       --default-storage-engine=innodb
     ]
+  redis:
+    image: redis:latest
+    ports:
+      - "36379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/redis:/data

@@ -9,9 +9,10 @@ import cloud.popush.exception.MachineException;
 import cloud.popush.util.NetUtils;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @AllArgsConstructor
-//@Component
+@Component
 public class VpnGateFilter implements GateFilter {
     private final VpnGateService vpnGateService;
 

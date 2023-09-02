@@ -6,7 +6,6 @@ import cloud.popush.envoy.AuthResultNg;
 import cloud.popush.envoy.GateFilter;
 import cloud.popush.exception.ArgumentException;
 import cloud.popush.exception.MachineException;
-import cloud.popush.util.GepIp2Service;
 import cloud.popush.util.NetUtils;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
@@ -32,11 +31,6 @@ public class CountryFilter implements GateFilter {
         }
 
         String countryName;
-
-        // system machine
-        if (ipStr.equals("192.168.1.200")) {
-            return new AuthReasonOk();
-        }
 
         try {
             countryName = geoIp2Service.getCountryName(ipStr);

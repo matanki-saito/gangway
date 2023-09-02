@@ -16,7 +16,7 @@
 <body>
 <main class="container">
     <h2>Country Filter</h2>
-    <p>Reject対象のCountryです。ISO 3166-alpha2コードが必要です。</p>
+    <p>許可対象のCountryです。<a href="https://ja.wikipedia.org/wiki/ISO_3166-1">ISO 3166 Name</a>が必要です。</p>
     <table class="table table-hover">
         <tbody>
         <tr class="thead-light">
@@ -30,7 +30,7 @@
                   th:action="@{'/country'}"
                   th:object="${countrySearchForm}">
                 <td><input class="form-control" id="ip-search" th:field="*{name}"
-                           th:placeholder="RU"
+                           th:placeholder="Japan"
                            type="text"/></td>
                 <td>
                     <button class="form-control btn btn-success" type="submit">SEARCH</button>
@@ -44,7 +44,7 @@
                   th:action="@{'/country/register'}"
                   th:object="${countryForm}">
                 <td><input class="form-control" id="ip-register" th:field="*{name}"
-                           th:placeholder="US"
+                           th:placeholder="Japan"
                            type="text"/></td>
                 <td>
                     <button class="form-control btn btn-success" type="submit">REGISTER</button>

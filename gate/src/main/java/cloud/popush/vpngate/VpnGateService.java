@@ -1,8 +1,10 @@
 package cloud.popush.vpngate;
 
+import cloud.popush.cache.CacheExpiring;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ import java.util.List;
 
 @Service
 public class VpnGateService {
+
+    @Cacheable("getVpnGateServiceList")
+    @CacheExpiring(600)
     public List<VpnGateDto> getList() {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate
