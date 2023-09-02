@@ -112,6 +112,4 @@ release {
     git {
         requireBranch.set('main')
     }
-
-    systemProperty("GRADLE_DEPLOY_VERSION", '${version}')
 }
