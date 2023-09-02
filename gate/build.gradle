@@ -41,6 +41,10 @@ targetCompatibility = "18"
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 bootJar {
