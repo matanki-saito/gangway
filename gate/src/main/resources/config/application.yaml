@@ -2,3 +2,4 @@ grpc:
   port: 9000
 server:
   port: 80
+# recaptcha.secret

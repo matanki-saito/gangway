@@ -1,6 +1,5 @@
 package cloud.popush.envoy;
 
-import cloud.popush.exception.MachineException;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.envoyproxy.envoy.service.auth.v3.AuthorizationGrpc;
@@ -24,8 +23,6 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
     public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
         var isPass = true;
 
-        log.info("POST LOG: {}", request);
-
         try {
             for (var filter : gateFilterList) {
                 var result = filter.check(request);
@@ -35,9 +32,13 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
                     break;
                 }
             }
-        } catch (MachineException e) {
+        } catch (Exception e) {
             isPass = false;
             log.warn("System error:{}", e.getMessage());
+        }
+
+        if (isPass) {
+            log.info("PASS");
         }
 
         var response = CheckResponse.newBuilder()
