@@ -9,7 +9,8 @@ buildscript {
             'mybatis'          : '3.0.2',
             'geoip2'           : '2.15.0',
             'docker'           : '0.35.0',
-            'release'          : '3.0.2'
+            'release'          : '3.0.2',
+            'logbackDiscord'   : '1.0.0',
     ]
 
     repositories {
@@ -71,6 +72,8 @@ dependencies {
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${versions.mybatis}")
 
     implementation("com.maxmind.geoip2:geoip2:${versions.geoip2}")
+
+    implementation("com.github.napstr:logback-discord-appender:${versions.logbackDiscord}")
 
     testImplementation platform("org.mockito:mockito-bom:${versions.mockito}")
     testImplementation('org.mockito:mockito-core')
