@@ -1,7 +1,13 @@
 package cloud.popush.country;
 
+import cloud.popush.envoy.AuthReasonOk;
+import cloud.popush.envoy.AuthResult;
+import cloud.popush.envoy.AuthResultNg;
 import cloud.popush.envoy.GateFilter;
+import cloud.popush.exception.ArgumentException;
+import cloud.popush.exception.MachineException;
 import cloud.popush.util.GepIp2Service;
+import cloud.popush.util.NetUtils;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +21,30 @@ public class CountryFilter implements GateFilter {
     private final CountryEntityMapper countryEntityMapper;
 
     @Override
-    public boolean check(CheckRequest checkRequest) {
-        var ipStr = checkRequest
-                .getAttributes()
-                .getRequest()
-                .getHttp()
-                .getHost();
+    public AuthResult check(CheckRequest checkRequest) throws MachineException {
 
-        var countryName = geoIp2Service.getCountryName(ipStr);
+        String ipStr;
 
-        log.info("{}:{}:{}", ipStr, checkRequest, countryName);
+        try {
+            ipStr = NetUtils.getIpStr(checkRequest);
+        } catch (ArgumentException e) {
+            return new AuthResultNg(e.getMessage());
+        }
 
-        return countryEntityMapper.exist(countryName);
+        String countryName;
+
+        try {
+            countryName = geoIp2Service.getCountryName(ipStr);
+        } catch (ArgumentException e) {
+            return new AuthResultNg("IP(%s) to country code conversion failed;error=%s"
+                    .formatted(ipStr, e.getMessage()));
+        }
+
+        if (!countryEntityMapper.exist(countryName)) {
+            return new AuthResultNg("No country name(%s) on the permit list. Ref:IP=%s"
+                    .formatted(countryName, ipStr));
+        }
+
+        return new AuthReasonOk();
     }
 }

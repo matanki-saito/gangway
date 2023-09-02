@@ -1,5 +1,7 @@
 package cloud.popush.util;
 
+import cloud.popush.exception.ArgumentException;
+import cloud.popush.exception.MachineException;
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
@@ -26,7 +28,7 @@ public class GepIp2Service {
 
         AsnResponse response;
         try (var reader = new DatabaseReader.Builder(databaseFile).withCache(new CHMCache()).build()) {
-            response = reader.asn(str2IpObj(ipStr));
+            response = reader.asn(InetAddress.getByName(ipStr));
         } catch (IOException | GeoIp2Exception e) {
             throw new RuntimeException(e);
         }
@@ -34,32 +36,23 @@ public class GepIp2Service {
         return response.getAutonomousSystemOrganization();
     }
 
-    public String getCountryName(@NonNull String ipStr) {
+    public String getCountryName(@NonNull String ipStr) throws ArgumentException, MachineException {
         File databaseFile;
         try {
             databaseFile = ResourceUtils.getFile("classpath:GeoLite2-Country.mmdb");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new MachineException("GeoLite2 Database is broken", e);
         }
 
         String response;
         try (var reader = new DatabaseReader.Builder(databaseFile).withCache(new CHMCache()).build()) {
-            response = reader.country(str2IpObj(ipStr)).getCountry().getName();
-            ;
-        } catch (IOException | GeoIp2Exception e) {
-            response = "XX";
+            response = reader.country(InetAddress.getByName(ipStr)).getCountry().getName();
+        } catch (GeoIp2Exception | UnknownHostException e) {
+            throw new ArgumentException("Invalid IP address", e);
+        } catch (IOException e) {
+            throw new MachineException("System error", e);
         }
 
         return response;
-    }
-
-    private InetAddress str2IpObj(String ipStr) {
-        InetAddress ipAddress;
-        try {
-            ipAddress = InetAddress.getByName(ipStr);
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
-        return ipAddress;
     }
 }

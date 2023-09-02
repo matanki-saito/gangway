@@ -1,7 +1,8 @@
 package cloud.popush.envoy;
 
+import cloud.popush.exception.MachineException;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 
 public interface GateFilter {
-    boolean check(CheckRequest checkRequest);
+    AuthResult check(CheckRequest checkRequest) throws MachineException;
 }

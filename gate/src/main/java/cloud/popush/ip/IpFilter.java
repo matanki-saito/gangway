@@ -1,6 +1,12 @@
 package cloud.popush.ip;
 
+import cloud.popush.envoy.AuthReasonOk;
+import cloud.popush.envoy.AuthResult;
+import cloud.popush.envoy.AuthResultNg;
 import cloud.popush.envoy.GateFilter;
+import cloud.popush.exception.ArgumentException;
+import cloud.popush.exception.MachineException;
+import cloud.popush.util.NetUtils;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,13 +17,18 @@ public class IpFilter implements GateFilter {
     private final IpEntityMapper ipEntityMapper;
 
     @Override
-    public boolean check(CheckRequest checkRequest) {
-        var ipStr = checkRequest
-                .getAttributes()
-                .getRequest()
-                .getHttp()
-                .getHost();
+    public AuthResult check(CheckRequest checkRequest) throws MachineException {
+        String ipStr;
+        try {
+            ipStr = NetUtils.getIpStr(checkRequest);
+        } catch (ArgumentException e) {
+            return new AuthResultNg(e.getMessage());
+        }
 
-        return !ipEntityMapper.exist(ipStr);
+        if(ipEntityMapper.exist(ipStr)){
+            return new AuthResultNg("IP(%s) is on the rejection list.".formatted(ipStr));
+        }
+
+        return new AuthReasonOk();
     }
 }

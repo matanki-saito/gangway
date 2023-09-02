@@ -1,5 +1,6 @@
 package cloud.popush.envoy;
 
+import cloud.popush.exception.MachineException;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
 import io.envoyproxy.envoy.service.auth.v3.AuthorizationGrpc;
@@ -23,24 +24,21 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
     public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
         var isPass = true;
 
-        log.info("{}", request);
-
         try {
             for (var filter : gateFilterList) {
-                if (!filter.check(request)) {
-                    log.info("NG:%s".formatted(filter.getClass().getName()));
+                var result = filter.check(request);
+                if (!result.isOk) {
                     isPass = false;
+                    log.info("{}:{}", filter.getClass(), result.reason);
                     break;
                 }
             }
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            log.info("{}", e.getStackTrace());
+        } catch (MachineException e) {
+            isPass = false;
+            log.warn("System error:{}", e.getMessage());
         }
 
-        log.info("f");
-
-        var r = CheckResponse.newBuilder()
+        var response = CheckResponse.newBuilder()
                 .setStatus(Status
                         .newBuilder()
                         .setCode(isPass ? Code.OK_VALUE : Code.PERMISSION_DENIED_VALUE)
@@ -48,10 +46,7 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
                         .build())
                 .build();
 
-        log.info("{}", r);
-
-        responseObserver.onNext(r);
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
-        responseObserver.onError(new RuntimeException());
     }
 }
