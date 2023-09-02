@@ -13,7 +13,7 @@ public class NetUtils {
                 .getHttp()
                 .getHeadersMap();
 
-        if (map.containsKey("x-forwarded-for")) {
+        if (!map.containsKey("x-forwarded-for")) {
             throw new ArgumentException("Not defined: x-forwarded-for");
         }
 
