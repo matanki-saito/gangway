@@ -24,6 +24,8 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
     public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
         var isPass = true;
 
+        log.info("POST LOG: {}", request);
+
         try {
             for (var filter : gateFilterList) {
                 var result = filter.check(request);
