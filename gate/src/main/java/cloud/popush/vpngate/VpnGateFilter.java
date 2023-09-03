@@ -32,6 +32,6 @@ public class VpnGateFilter implements GateFilter {
             return new AuthResultNg("IP(%s) is on the VPNGate list.".formatted(ipStr));
         }
 
-        return new AuthReasonOk();
+        return new AuthReasonOk("IP:%s".formatted(ipStr));
     }
 }

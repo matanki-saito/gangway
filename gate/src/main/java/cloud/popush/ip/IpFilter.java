@@ -25,10 +25,10 @@ public class IpFilter implements GateFilter {
             return new AuthResultNg(e.getMessage());
         }
 
-        if(ipEntityMapper.exist(ipStr)){
+        if (ipEntityMapper.exist(ipStr)) {
             return new AuthResultNg("IP(%s) is on the rejection list.".formatted(ipStr));
         }
 
-        return new AuthReasonOk();
+        return new AuthReasonOk("IP:%s".formatted(ipStr));
     }
 }

@@ -38,6 +38,6 @@ public class FingerprintFilter implements GateFilter {
             return new AuthResultNg("fp(%s) is on the rejection list.".formatted(fingerprint));
         }
 
-        return new AuthReasonOk();
+        return new AuthReasonOk("FP:%s".formatted(fingerprint));
     }
 }

@@ -44,6 +44,6 @@ public class CountryFilter implements GateFilter {
                     .formatted(countryName, ipStr));
         }
 
-        return new AuthReasonOk();
+        return new AuthReasonOk("Country:%s".formatted(countryName));
     }
 }

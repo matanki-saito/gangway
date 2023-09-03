@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lognet.springboot.grpc.GRpcService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +24,8 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
     public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
         var isPass = true;
 
+        List<String> logs = new ArrayList<>();
+
         try {
             for (var filter : gateFilterList) {
                 var result = filter.check(request);
@@ -30,6 +33,8 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
                     isPass = false;
                     log.info("{}:{}", filter.getClass(), result.reason);
                     break;
+                } else {
+                    logs.add("%s:%s".formatted(filter.getClass(), result.reason));
                 }
             }
         } catch (Exception e) {
@@ -38,7 +43,8 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
         }
 
         if (isPass) {
-            log.info("PASS");
+            // TODO: to elasticsearch
+            log.info("PASS:%s".formatted(String.join("\n", logs)));
         }
 
         var response = CheckResponse.newBuilder()
