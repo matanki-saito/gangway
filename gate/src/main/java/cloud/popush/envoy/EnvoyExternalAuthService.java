@@ -34,7 +34,7 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
             }
         } catch (Exception e) {
             isPass = false;
-            log.warn("System error:{}", e.getMessage());
+            log.warn("System error:{},{}", e.getMessage(), e.getStackTrace());
         }
 
         if (isPass) {
