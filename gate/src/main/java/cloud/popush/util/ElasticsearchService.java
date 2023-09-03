@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,6 +21,8 @@ public class ElasticsearchService {
         aIndex(indexName);
 
         try {
+            log.put("@timestamp", LocalDateTime.now(ZoneId.of("Asia/Tokyo"))
+                    .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             IndexResponse response = elasticsearchClient.index(i -> i
                     .index(indexName)
                     .id(UUID.randomUUID().toString())
