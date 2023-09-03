@@ -21,7 +21,8 @@ public class ElasticsearchService {
         aIndex(indexName);
 
         try {
-            log.put("@timestamp", LocalDateTime.now(ZoneId.of("Asia/Tokyo"))
+            // ESはUTCでしか処理できない。kibanaで表示を変更する
+            log.put("@timestamp", LocalDateTime.now(ZoneId.of("UTC"))
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             IndexResponse response = elasticsearchClient.index(i -> i
                     .index(indexName)

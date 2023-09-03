@@ -14,11 +14,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 
 @ExtendWith(MockitoExtension.class)
 class ElasticsearchServiceTest {
+
+    @Test
+    void timestampTest(){
+        String print = LocalDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+    }
 
     @Test
     void sendLog() {
