@@ -5,4 +5,9 @@ public class AuthReasonOk extends AuthResult {
         this.reason = "Ok";
         this.isOk = true;
     }
+
+    public AuthReasonOk(String reason) {
+        this.reason = reason;
+        this.isOk = true;
+    }
 }

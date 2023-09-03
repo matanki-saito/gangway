@@ -3,3 +3,4 @@ grpc:
 server:
   port: 80
 # recaptcha.secret
+# proxy.vpnapi.key

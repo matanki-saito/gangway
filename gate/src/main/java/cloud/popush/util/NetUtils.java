@@ -28,6 +28,21 @@ public class NetUtils {
         return map.get("x-forwarded-for");
     }
 
+    public static String getUserAgent(CheckRequest checkRequest) throws ArgumentException {
+        var map = checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getHeadersMap();
+
+        if (!map.containsKey("user-agent")) {
+            throw new ArgumentException("Not defined: User-Agent");
+        }
+
+        return map.get("user-agent");
+    }
+
+
     public static Map<String, String> getQuery(CheckRequest checkRequest) throws UnsupportedEncodingException {
         var request = checkRequest.getAttributes().getRequest().getHttp();
 

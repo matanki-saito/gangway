@@ -42,13 +42,6 @@ public class ReCaptchaFilter implements GateFilter {
             return new AuthResultNg("recaptcha token not found in body");
         }
 
-        String ipStr;
-        try {
-            ipStr = NetUtils.getIpStr(checkRequest);
-        } catch (ArgumentException e) {
-            ipStr = "";
-        }
-
         var recaptchaToken = queryMap.get("reCapchaToken");
 
         RestTemplate restTemplate = new RestTemplate();
@@ -56,7 +49,6 @@ public class ReCaptchaFilter implements GateFilter {
                         "https://www.google.com/recaptcha/api/siteverify")
                 .queryParam("secret", reCaptchaV3Secret)
                 .queryParam("response", recaptchaToken)
-                //.queryParam("remoteip", ipStr)
                 .encode()
                 .toUriString();
 

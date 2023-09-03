@@ -20,7 +20,7 @@ class GepIp2ServiceTest {
     }
 
     @Test
-    void getCountryName() {
+    void getCountryName() throws Exception {
         var org = gepIp2Service.getCountryName("90.149.116.17");
         Assertions.assertEquals("Japan", org);
     }
