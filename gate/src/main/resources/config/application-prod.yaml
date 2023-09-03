@@ -11,3 +11,4 @@ spring:
     redis:
       host: gangway-redis
       port: 6379
+# elastic config from secret

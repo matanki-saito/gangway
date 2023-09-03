@@ -42,6 +42,14 @@ public class NetUtils {
         return map.get("user-agent");
     }
 
+    public static String getHost(CheckRequest checkRequest) {
+        return checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getHost();
+    }
+
 
     public static Map<String, String> getQuery(CheckRequest checkRequest) throws UnsupportedEncodingException {
         var request = checkRequest.getAttributes().getRequest().getHttp();

@@ -14,3 +14,7 @@ spring:
     redis:
       host: localhost
       port: 36379
+  elasticsearch:
+    username: elastic
+    password: hogehoge
+    uris: http://localhost:9200
