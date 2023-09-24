@@ -56,7 +56,6 @@
         </appender>
 
         <root level="INFO">
-            <appender-ref ref="ASYNC_DISCORD"/>
             <appender-ref ref="STDOUT"/>
         </root>
     </springProfile>
