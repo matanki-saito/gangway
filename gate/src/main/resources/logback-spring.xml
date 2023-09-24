@@ -13,8 +13,22 @@
         </encoder>
     </appender>
 
-    <!--ローカル環境及びテスト環境では、INFO レベル以上を console に出力する -->
+    <appender name="ESOUT" class="cloud.popush.logging.ElasticSearchAppender">
+        <key>POS</key>
+        <host>${LOGBACK_ES_HOST}</host>
+        <port>${LOGBACK_ES_PORT}</port>
+        <username>${LOGBACK_ES_USERNAME}</username>
+        <password>${LOGBACK_ES_PASSWORD}</password>
+    </appender>
+
     <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="ESOUT"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local">
         <root level="INFO">
             <appender-ref ref="STDOUT"/>
         </root>

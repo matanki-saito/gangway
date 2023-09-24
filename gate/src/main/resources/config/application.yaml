@@ -1,6 +1,13 @@
 grpc:
   port: 9000
 server:
-  port: 80
+  port: 9595
 # recaptcha.secret
 # proxy.vpnapi.key
+gate:
+  filter:
+    "[httpbin.local]":
+      get-methods:
+        "[/cookies(.*)]":
+          UserLogFilter: true
+          keyCloakFilter: true

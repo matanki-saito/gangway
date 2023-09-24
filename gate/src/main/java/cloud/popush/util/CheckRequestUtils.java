@@ -5,15 +5,13 @@ import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.experimental.UtilityClass;
 
 import java.io.UnsupportedEncodingException;
+import java.net.HttpCookie;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @UtilityClass
-public class NetUtils {
+public class CheckRequestUtils {
     public static String getIpStr(CheckRequest checkRequest) throws ArgumentException {
         var map = checkRequest
                 .getAttributes()
@@ -50,6 +48,43 @@ public class NetUtils {
                 .getHost();
     }
 
+    public static String getPath(CheckRequest checkRequest) {
+        var pathWithGetParams = checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getPath();
+
+        var array = pathWithGetParams.split("\\?");
+
+        return array[0];
+    }
+
+    public static String getPathWithParam(CheckRequest checkRequest) {
+        var pathWithGetParams = checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getPath();
+
+        return pathWithGetParams;
+    }
+
+    public static String getScheme(CheckRequest checkRequest) {
+        return checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getScheme();
+    }
+
+    public static String getMethod(CheckRequest checkRequest) {
+        return checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getMethod();
+    }
 
     public static Map<String, String> getQuery(CheckRequest checkRequest) throws UnsupportedEncodingException {
         var request = checkRequest.getAttributes().getRequest().getHttp();
@@ -78,5 +113,25 @@ public class NetUtils {
         }
 
         return query_pairs;
+    }
+
+    public static Optional<List<HttpCookie>> getCookie(CheckRequest checkRequest) {
+        var headersMap = checkRequest
+                .getAttributes()
+                .getRequest()
+                .getHttp()
+                .getHeadersMap();
+
+        if (!headersMap.containsKey("cookie")) {
+            return Optional.empty();
+        }
+
+        var cookies = HttpCookie.parse(headersMap.get("cookie"));
+
+        return Optional.of(cookies);
+    }
+
+    public static String getUrl(CheckRequest checkRequest) {
+        return "%s://%s%s".formatted(getScheme(checkRequest), getHost(checkRequest), getPathWithParam(checkRequest));
     }
 }

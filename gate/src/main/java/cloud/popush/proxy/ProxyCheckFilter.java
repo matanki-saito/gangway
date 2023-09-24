@@ -7,7 +7,7 @@ import cloud.popush.envoy.GateFilter;
 import cloud.popush.exception.ArgumentException;
 import cloud.popush.exception.MachineException;
 import cloud.popush.exception.OtherSystemException;
-import cloud.popush.util.NetUtils;
+import cloud.popush.util.CheckRequestUtils;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class ProxyCheckFilter implements GateFilter {
     public AuthResult check(CheckRequest checkRequest) throws MachineException {
         String ipStr;
         try {
-            ipStr = NetUtils.getIpStr(checkRequest);
+            ipStr = CheckRequestUtils.getIpStr(checkRequest);
         } catch (ArgumentException e) {
             return new AuthResultNg(e.getMessage());
         }

@@ -5,7 +5,7 @@ import cloud.popush.envoy.AuthResult;
 import cloud.popush.envoy.AuthResultNg;
 import cloud.popush.envoy.GateFilter;
 import cloud.popush.exception.MachineException;
-import cloud.popush.util.NetUtils;
+import cloud.popush.util.CheckRequestUtils;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class FingerprintFilter implements GateFilter {
 
         Map<String, String> queryMap;
         try {
-            queryMap = NetUtils.getQuery(checkRequest);
+            queryMap = CheckRequestUtils.getQuery(checkRequest);
         } catch (UnsupportedEncodingException e) {
             return new AuthResultNg("Invalid character: %s".formatted(e.getMessage()));
         }
