@@ -63,7 +63,7 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
         contexts.put("@timestamp", timestamp.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
-    private List<AuthResult> getAuths(ILoggingEvent eventObject){
+    private List<AuthResult> getAuths(ILoggingEvent eventObject) {
         if (eventObject.getArgumentArray().length == 0) {
             return List.of();
         }
@@ -73,7 +73,7 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
             return List.of();
         }
 
-        return  aw.stream()
+        return aw.stream()
                 .filter(x -> x instanceof AuthResult)
                 .map(x -> (AuthResult) x)
                 .toList();
@@ -86,11 +86,11 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private Map<String, Object> aggFailReasons(List<AuthResult> list){
+    private Map<String, Object> aggFailReasons(List<AuthResult> list) {
         return list.stream()
                 .filter(x -> x instanceof AuthResultNg)
                 .collect(Collectors.toMap(
-                        x->"fail.%s".formatted(x.getFilterName()),
+                        x -> "fail.%s".formatted(x.getFilterName()),
                         AuthResult::getReason));
     }
 
@@ -127,7 +127,7 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(userName, password));
 
-        final var restClientBuilder = RestClient.builder(new HttpHost(host, port));
+        final var restClientBuilder = RestClient.builder(new HttpHost(host, port, "http"));
         restClientBuilder.setHttpClientConfigCallback(
                 httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
 

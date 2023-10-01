@@ -51,7 +51,7 @@
             </filter>
         </appender>
 
-        <logger name="authlogger" level="INFO">
+        <logger name="authlogger" level="INFO" additivity="false">
             <appender-ref ref="ESOUT"/>
         </logger>
 
