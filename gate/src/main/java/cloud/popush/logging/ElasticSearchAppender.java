@@ -127,6 +127,8 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(userName, password));
 
+        System.out.printf("%s-%s-%s-%s%n", host, port, userName, password);
+
         final var restClientBuilder = RestClient.builder(new HttpHost(host, port, "http"));
         restClientBuilder.setHttpClientConfigCallback(
                 httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
