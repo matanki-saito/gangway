@@ -7,4 +7,6 @@ if [ $? -ne 0 ]; then
   echo -e "$HOST_IP\t$HOST_DOMAIN" >>/etc/hosts
 fi
 
+sleep 10
+
 java -cp app:app/lib/* -Dspring.profiles.active=prod cloud.popush.GateApplication
