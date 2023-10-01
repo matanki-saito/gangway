@@ -85,7 +85,9 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
         return list.stream()
                 .map(AuthResult::getContext)
                 .flatMap(m -> m.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,(address1, address2) -> {
+                    return address1;
+                }));
     }
 
     private Map<String, Object> aggFailReasons(List<AuthResult> list) {
