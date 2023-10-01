@@ -53,6 +53,7 @@
 
         <logger name="authlogger" level="INFO" additivity="false">
             <appender-ref ref="ESOUT"/>
+            <appender-ref ref="STDOUT"/>
         </logger>
 
         <root level="INFO">
