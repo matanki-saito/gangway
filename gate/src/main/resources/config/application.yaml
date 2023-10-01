@@ -4,10 +4,4 @@ server:
   port: 9595
 # recaptcha.secret
 # proxy.vpnapi.key
-gate:
-  filter:
-    "[httpbin.local]":
-      get-methods:
-        "[/cookies(.*)]":
-          UserLogFilter: true
-          keyCloakFilter: true
+

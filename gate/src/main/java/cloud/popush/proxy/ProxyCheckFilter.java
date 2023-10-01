@@ -35,18 +35,18 @@ public class ProxyCheckFilter implements GateFilter {
         }
 
         // internal API
-        if(info.getSecurity() == null){
+        if (info.getSecurity() == null) {
             return new AuthReasonOk();
         }
 
         if (info.getSecurity().isProxy()) {
-            return new AuthResultNg("proxy IP = %s".formatted(ipStr));
+            return new AuthResultNg("Detect proxy");
         } else if (info.getSecurity().isTor()) {
-            return new AuthResultNg("tor IP = %s".formatted(ipStr));
+            return new AuthResultNg("Detect tor");
         } else if (info.getSecurity().isVpn()) {
-            return new AuthResultNg("VPN IP = %s".formatted(ipStr));
+            return new AuthResultNg("Detect VPN");
         } else if (info.getSecurity().isRelay()) {
-            return new AuthResultNg("Relay IP = %s".formatted(ipStr));
+            return new AuthResultNg("Detect Relay");
         } else {
             return new AuthReasonOk();
         }

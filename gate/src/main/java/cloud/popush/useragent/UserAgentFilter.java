@@ -30,9 +30,9 @@ public class UserAgentFilter implements GateFilter {
         }
 
         if (rePattern.matcher(userAgent).find()) {
-            return new AuthResultNg("Bad UA: %s".formatted(userAgent));
+            return new AuthResultNg("Bad UA");
         }
 
-        return new AuthReasonOk("UA:%s".formatted(userAgent));
+        return new AuthReasonOk();
     }
 }

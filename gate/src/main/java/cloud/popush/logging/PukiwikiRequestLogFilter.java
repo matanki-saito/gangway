@@ -19,34 +19,31 @@ import java.util.Map;
 public class PukiwikiRequestLogFilter implements GateFilter {
     @Override
     public AuthResult check(CheckRequest checkRequest) throws MachineException {
-        Map<String, Object> result = new HashMap<>();
 
-        Map<String, String> query;
+        Map<String, Object> query;
         try {
             query = CheckRequestUtils.getQuery(checkRequest);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        Map<String, String> contents = new HashMap<>();
+        Map<String, Object> contexts = new HashMap<>();
         if (query.containsKey("plugin")) {
-            contents.put("plugin", query.get("plugin"));
+            contexts.put("pukiwiki.plugin", query.get("plugin").toString());
         }
         if (query.containsKey("cmd")) {
-            contents.put("cmd", query.get("cmd"));
+            contexts.put("pukiwiki.cmd", query.get("cmd").toString());
         }
         if (query.containsKey("page")) {
-            contents.put("page", StringUtils.truncate(query.get("page"), 1500));
+            contexts.put("pukiwiki.page", StringUtils.truncate(query.get("page").toString(), 1500));
         }
         if (query.containsKey("msg")) {
-            contents.put("msg", StringUtils.truncate(query.get("msg"), 1500));
+            contexts.put("pukiwiki.msg", StringUtils.truncate(query.get("msg").toString(), 1500));
         }
         if (query.containsKey("original")) {
-            contents.put("original", StringUtils.truncate(query.get("original"), 1500));
+            contexts.put("pukiwiki.original", StringUtils.truncate(query.get("original").toString(), 1500));
         }
 
-        result.put("content",contents);
-
-        return new AuthReasonOk(result);
+        return new AuthReasonOk(contexts);
     }
 }

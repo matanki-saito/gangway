@@ -11,6 +11,8 @@ import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @AllArgsConstructor
 @Component
 public class IpFilter implements GateFilter {
@@ -26,9 +28,9 @@ public class IpFilter implements GateFilter {
         }
 
         if (ipEntityMapper.exist(ipStr)) {
-            return new AuthResultNg("IP(%s) is on the rejection list.".formatted(ipStr));
+            return new AuthResultNg("IP is on the rejection list.");
         }
 
-        return new AuthReasonOk("IP:%s".formatted(ipStr));
+        return new AuthReasonOk(Map.of("user.IP", ipStr));
     }
 }

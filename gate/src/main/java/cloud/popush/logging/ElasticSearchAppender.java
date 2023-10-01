@@ -3,8 +3,8 @@ package cloud.popush.logging;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import cloud.popush.envoy.AuthResult;
+import cloud.popush.envoy.AuthResultNg;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Setter
-    private String key;
-
-    @Setter
     private Integer port;
 
     @Setter
@@ -43,30 +40,7 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     private ElasticsearchClient elasticsearchClient;
 
-    @Override
-    protected void append(ILoggingEvent eventObject) {
-        eventObject
-                .getKeyValuePairs()
-                .stream()
-                .filter(x -> x.key.equals(key) && x.value instanceof List)
-                .map(x -> x.value)
-                .forEach(x -> innerAppend((List) x));
-    }
-
-    @Override
-    public void start() {
-        elasticsearchClient = setupClient(host, port, username, password);
-        super.start();
-    }
-
-    protected void innerAppend(List<? extends AuthResult> results) {
-        var contexts = results.stream()
-                .map(AuthResult::getContext)
-                .flatMap(m -> m.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        var indexName = contexts.getOrDefault("host", "-").toString().toLowerCase();
-
+    private void setUpIndex(String indexName) {
         // 初回index作成
         try {
             if (!elasticsearchClient.indices().exists(c -> c.index(indexName)).value()) {
@@ -75,26 +49,76 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void fixTimestamp(Map<String, Object> contexts) {
+        // ESはUTCでしか処理できない。kibanaで表示を変更する
+        LocalDateTime timestamp;
+        if (contexts.containsKey("timestamp") && contexts.get("timestamp") instanceof LocalDateTime) {
+            timestamp = (LocalDateTime) contexts.get("timestamp");
+            contexts.remove("timestamp");
+        } else {
+            timestamp = LocalDateTime.now(ZoneId.of("UTC"));
+        }
+        contexts.put("@timestamp", timestamp.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+    }
+
+    private List<AuthResult> getAuths(ILoggingEvent eventObject){
+        if (eventObject.getArgumentArray().length == 0) {
+            return List.of();
+        }
+
+        var first = eventObject.getArgumentArray()[0];
+        if (!(first instanceof List<?> aw)) {
+            return List.of();
+        }
+
+        return  aw.stream()
+                .filter(x -> x instanceof AuthResult)
+                .map(x -> (AuthResult) x)
+                .toList();
+    }
+
+    private Map<String, Object> getContexts(List<AuthResult> list) {
+        return list.stream()
+                .map(AuthResult::getContext)
+                .flatMap(m -> m.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private Map<String, Object> aggFailReasons(List<AuthResult> list){
+        return list.stream()
+                .filter(x -> x instanceof AuthResultNg)
+                .collect(Collectors.toMap(
+                        x->"fail.%s".formatted(x.getFilterName()),
+                        AuthResult::getReason));
+    }
+
+    @Override
+    protected void append(ILoggingEvent eventObject) {
+        var auths = getAuths(eventObject);
+        var contexts = getContexts(auths);
+        var indexName = contexts.getOrDefault("target.host", "-").toString().toLowerCase();
+        var id = UUID.randomUUID().toString();
+
+        setUpIndex(indexName);
+        fixTimestamp(contexts);
+        contexts.putAll(aggFailReasons(auths));
 
         try {
-            // ESはUTCでしか処理できない。kibanaで表示を変更する
-            LocalDateTime timestamp;
-            if (contexts.containsKey("timestamp") && contexts.get("timestamp") instanceof LocalDateTime) {
-                timestamp = (LocalDateTime) contexts.get("timestamp");
-                contexts.remove("timestamp");
-            } else {
-                timestamp = LocalDateTime.now(ZoneId.of("UTC"));
-            }
-
-            contexts.put("@timestamp", timestamp.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-            IndexResponse response = elasticsearchClient.index(i -> i
+            elasticsearchClient.index(i -> i
                     .index(indexName)
-                    .id(UUID.randomUUID().toString())
-                    .document(contexts)
-            );
+                    .id(id)
+                    .document(contexts));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void start() {
+        elasticsearchClient = setupClient(host, port, username, password);
+        super.start();
     }
 
     private ElasticsearchClient setupClient(String host, Integer port, String userName, String password) {

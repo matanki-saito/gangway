@@ -19,21 +19,18 @@ spring:
       resource-server:
         jwt:
           issuer-uri: https://keycloak.popush.cloud/realms/Abyss
-      client:
-        registration:
-          keycloak:
-            client-id: ido-front
-            # client-secret: from env
-            provider: keycloak
-            scope: openid
-            authorization-grant-type: authorization_code
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-        provider:
-          keycloak:
-            authorization-uri: https://keycloak.popush.cloud/realms/Abyss/protocol/openid-connect/auth
-            token-uri: https://keycloak.popush.cloud/realms/Abyss/protocol/openid-connect/token
-            user-info-uri: https://keycloak.popush.cloud/realms/Abyss/protocol/openid-connect/userinfo
-            jwk-set-uri: https://keycloak.popush.cloud/realms/Abyss/protocol/openid-connect/certs
-            user-name-attribute: preferred_username
-
-
+gate:
+  filter:
+    "[httpbin.local]":
+      get-methods:
+        "[/cookies(.*)]":
+          TargetFilter: true
+          UserLogFilter: true
+          keyCloakFilter: true
+    "[eu4.paradwiki.local]":
+      post-methods:
+        "[/(.*)]":
+          TargetFilter: true
+          UserLogFilter: true
+          FingerprintFilter: true
+          PukiwikiRequestLogFilter: true

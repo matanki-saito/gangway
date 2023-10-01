@@ -22,7 +22,7 @@ public class FingerprintFilter implements GateFilter {
     @Override
     public AuthResult check(CheckRequest checkRequest) throws MachineException {
 
-        Map<String, String> queryMap;
+        Map<String, Object> queryMap;
         try {
             queryMap = CheckRequestUtils.getQuery(checkRequest);
         } catch (UnsupportedEncodingException e) {
@@ -33,11 +33,11 @@ public class FingerprintFilter implements GateFilter {
             return new AuthResultNg("fingerprint not found in body");
         }
 
-        var fingerprint = queryMap.get("fingerprint");
+        var fingerprint = queryMap.get("fingerprint").toString();
         if (fingerprintEntityMapper.exist(fingerprint)) {
-            return new AuthResultNg("fp(%s) is on the rejection list.".formatted(fingerprint));
+            return new AuthResultNg("fingerprint is on the rejection list.");
         }
 
-        return new AuthReasonOk("FP:%s".formatted(fingerprint));
+        return new AuthReasonOk(Map.of("user.fingerprint", fingerprint));
     }
 }

@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @AllArgsConstructor
 @Slf4j
 @Component
@@ -44,6 +46,6 @@ public class CountryFilter implements GateFilter {
                     .formatted(countryName, ipStr));
         }
 
-        return new AuthReasonOk("Country:%s".formatted(countryName));
+        return new AuthReasonOk(Map.of("user.country", countryName));
     }
 }

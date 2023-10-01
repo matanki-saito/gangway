@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Slf4j
+@Slf4j(topic = "authlogger")
 @AllArgsConstructor
 @GRpcService
 public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImplBase {
@@ -143,6 +143,6 @@ public class EnvoyExternalAuthService extends AuthorizationGrpc.AuthorizationImp
         responseObserver.onNext(response);
         responseObserver.onCompleted();
 
-        log.atInfo().addKeyValue("POS", authResults).log();
+        log.info("{}", authResults);
     }
 }

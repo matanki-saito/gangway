@@ -30,7 +30,7 @@ public class ReCaptchaFilter implements GateFilter {
 
     @Override
     public AuthResult check(CheckRequest checkRequest) throws MachineException {
-        Map<String, String> queryMap;
+        Map<String, Object> queryMap;
         try {
             queryMap = CheckRequestUtils.getQuery(checkRequest);
         } catch (UnsupportedEncodingException e) {
@@ -41,7 +41,7 @@ public class ReCaptchaFilter implements GateFilter {
             return new AuthResultNg("recaptcha token not found in body");
         }
 
-        var recaptchaToken = queryMap.get("reCapchaToken");
+        var recaptchaToken = queryMap.get("reCapchaToken").toString();
 
         RestTemplate restTemplate = new RestTemplate();
         String urlTemplate = UriComponentsBuilder.fromHttpUrl(

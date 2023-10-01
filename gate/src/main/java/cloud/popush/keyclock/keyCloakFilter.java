@@ -26,11 +26,11 @@ public class keyCloakFilter implements GateFilter {
 
     @Override
     public AuthResult check(CheckRequest checkRequest) throws MachineException {
-        var cookies = CheckRequestUtils.getCookie(checkRequest);
+        var cookies = CheckRequestUtils.getCookies(checkRequest);
 
         var url = getUrl(checkRequest);
 
-        var redirector = Map.of("Location", "/ido-front?url=%s".formatted(url));
+        var redirector = Map.of("Location", "/oauth2/authorization/keycloak?begin=%s".formatted(url));
 
         if (cookies.isEmpty()) {
             return new AuthResultNg("Not found cookie in request header",
@@ -38,13 +38,7 @@ public class keyCloakFilter implements GateFilter {
                     302);
         }
 
-        var targetHeader = cookies
-                .get()
-                .stream()
-                .filter(x -> "far-caress".equals(x.getName()))
-                .findAny();
-
-        if (targetHeader.isEmpty()) {
+        if (!cookies.containsKey("far-caress")) {
             return new AuthResultNg("Not found key in cookie",
                     redirector,
                     302);
@@ -52,7 +46,7 @@ public class keyCloakFilter implements GateFilter {
 
         Jwt jwt;
         try {
-            jwt = jwtDecoder.decode(targetHeader.get().getValue());
+            jwt = jwtDecoder.decode(cookies.get("far-caress"));
         } catch (JwtException e) {
             return new AuthResultNg("Invalid JWT in cookie",
                     redirector,
