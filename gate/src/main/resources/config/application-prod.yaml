@@ -15,7 +15,8 @@ spring:
     oauth2:
       resource-server:
         jwt:
-          issuer-uri: https://keycloak.popush.cloud/realms/Abyss
+          issuer-uri: http://keycloak-sv/realms/Abyss
+
 gate:
   filter:
     "[eu4.paradoxwiki.org]":
