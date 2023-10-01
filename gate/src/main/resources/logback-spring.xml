@@ -21,7 +21,7 @@
     </appender>
 
     <springProfile name="dev">
-        <logger name="authlogger" level="INFO" additivity="false">
+        <logger name="authlogger" level="INFO">
             <appender-ref ref="ESOUT"/>
         </logger>
 

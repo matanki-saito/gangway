@@ -9,6 +9,7 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEvent> {
 
     @Setter
@@ -96,29 +98,34 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
 
     @Override
     protected void append(ILoggingEvent eventObject) {
-        var auths = getAuths(eventObject);
-        var contexts = getContexts(auths);
-        var indexName = contexts.getOrDefault("target.host", "-").toString().toLowerCase();
-        var id = UUID.randomUUID().toString();
-
-        setUpIndex(indexName);
-        fixTimestamp(contexts);
-        contexts.putAll(aggFailReasons(auths));
-
         try {
+            var auths = getAuths(eventObject);
+            var contexts = getContexts(auths);
+            var indexName = contexts.getOrDefault("target.host", "-").toString().toLowerCase();
+            var id = UUID.randomUUID().toString();
+
+            setUpIndex(indexName);
+            fixTimestamp(contexts);
+            contexts.putAll(aggFailReasons(auths));
+
+
             elasticsearchClient.index(i -> i
                     .index(indexName)
                     .id(id)
                     .document(contexts));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 
     @Override
     public void start() {
-        elasticsearchClient = setupClient(host, port, username, password);
-        super.start();
+        try {
+            elasticsearchClient = setupClient(host, port, username, password);
+            super.start();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
     private ElasticsearchClient setupClient(String host, Integer port, String userName, String password) {
@@ -126,8 +133,6 @@ public class ElasticSearchAppender extends UnsynchronizedAppenderBase<ILoggingEv
         credentialsProvider.setCredentials(
                 AuthScope.ANY,
                 new UsernamePasswordCredentials(userName, password));
-
-        System.out.printf("%s-%s-%s-%s%n", host, port, userName, password);
 
         final var restClientBuilder = RestClient.builder(new HttpHost(host, port, "http"));
         restClientBuilder.setHttpClientConfigCallback(
